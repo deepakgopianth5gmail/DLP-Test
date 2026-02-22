@@ -1,0 +1,21 @@
+// Define an interface for a Person
+interface Person {
+  firstName: string;
+  lastName: string;
+  age: number;
+}
+
+// Function to greet a person
+function greet(person: Person): string {
+  return `Hello, ${person.firstName} ${person.lastName}! You are ${person.age} years old.`;
+}
+
+// Create a Person object
+const user: Person = {
+  firstName: "John",
+  lastName: "Doe",
+  age: 30,
+};
+
+// Call the greet function and log the result
+console.log(greet(user));

@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define SENSITIVE_DATA_PATTERN "CONFIDENTIAL_PROJECT_ALPHA_DATA_12345"
+#define TEST_FILE_NAME "sensitive_test_data.txt"
+#define MAX_BUFFER_SIZE 1024
+
+int main() {
+    FILE *fp;
+    char buffer[MAX_BUFFER_SIZE];
+
+    // Scenario 1: Writing sensitive data to a local file
+    printf("Scenario 1: Attempting to write sensitive data to a local file...\n");
+    fp = fopen(TEST_FILE_NAME, "w");
+    if (fp == NULL) {
+        perror("Error opening file for writing");
+        return 1;
+    }
+    fprintf(fp, "This is some test content.\n");
+    fprintf(fp, "This line contains the sensitive pattern: %s\n", SENSITIVE_DATA_PATTERN);
+    fprintf(fp, "More regular content.\n");
+    fclose(fp);
+    printf("File '%s' created with sensitive data.\n", TEST_FILE_NAME);
+
+    // Scenario 2: Reading sensitive data from a file
+    printf("\nScenario 2: Attempting to read sensitive data from the file...\n");
+    fp = fopen(TEST_FILE_NAME, "r");
+    if (fp == NULL) {
+        perror("Error opening file for reading");
+        return 1;
+    }
+    printf("Content of '%s':\n", TEST_FILE_NAME);
+    while (fgets(buffer, MAX_BUFFER_SIZE, fp) != NULL) {
+        printf("%s", buffer);
+        if (strstr(buffer, SENSITIVE_DATA_PATTERN) != NULL) {
+            printf("  (Sensitive pattern detected during read)\n");
+        }
+    }
+    fclose(fp);
+
+    // Scenario 3: Simulating data copy (e.g., to a simulated removable device)
+    // This part would require more complex system-level interactions
+    // For a simple test, we can just indicate the intent.
+    printf("\nScenario 3: Simulating attempt to copy sensitive data (e.g., to USB)...\n");
+    printf("  (In a real test, this would involve copying '%s' to a different location/device.)\n", TEST_FILE_NAME);
+
+    // Clean up: remove the test file
+    printf("\nCleaning up: Deleting '%s'...\n", TEST_FILE_NAME);
+    if (remove(TEST_FILE_NAME) == 0) {
+        printf("File deleted successfully.\n");
+    } else {
+        perror("Error deleting file");
+    }
+
+    return 0;
+}

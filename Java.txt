@@ -1,0 +1,44 @@
+public class DlpInspectEmail {
+    public static void main(String[] args) throws IOException {
+        // Your GCP project ID
+        String projectId = "[PROJECT_ID]";
+
+        // Client initialization
+        try (DlpServiceClient dlp = DlpServiceClient.create()) {
+
+            // The string to inspect
+            String text = "Contact me at example@example.com.";
+
+            // InfoType to detect
+            InfoType emailInfoType = InfoType.newBuilder().setName("EMAIL_ADDRESS").build();
+
+            InspectConfig inspectConfig = InspectConfig.newBuilder()
+                    .addAllInfoTypes(Arrays.asList(emailInfoType))
+                    .build();
+
+            ContentItem contentItem = ContentItem.newBuilder()
+                    .setValue(text)
+                    .build();
+
+            InspectContentRequest request = InspectContentRequest.newBuilder()
+                    .setParent(ProjectName.of(projectId).toString())
+                    .setInspectConfig(inspectConfig)
+                    .setItem(contentItem)
+                    .build();
+
+            InspectContentResponse response = dlp.inspectContent(request);
+
+            if (response.getResult().getFindingsCount() > 0) {
+                System.out.println("Findings:");
+                response.getResult().getFindingsList().forEach(finding -> {
+                    System.out.println("  InfoType: " + finding.getInfoType().getName());
+                    System.out.println("  Quote: " + finding.getQuote());
+                    System.out.println("  Likelihood: " + finding.getLikelihood());
+                    System.out.println();
+                });
+            } else {
+                System.out.println("No findings.");
+            }
+        }
+    }
+}

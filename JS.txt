@@ -1,0 +1,22 @@
+function findEmails(text) {
+  // Regular expression pattern for basic email detection
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Split input text by spaces to check each word (simple approach)
+  const words = text.split(/\s+/);
+
+  // Filter words that match the email pattern
+  const emails = words.filter(word => emailPattern.test(word));
+
+  return emails;
+}
+
+// Example usage:
+const sampleText = "Contact me at example@example.com or admin@mywebsite.org.";
+const detectedEmails = findEmails(sampleText);
+
+if (detectedEmails.length > 0) {
+  console.log("Found emails:", detectedEmails);
+} else {
+  console.log("No emails found.");
+}

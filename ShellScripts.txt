@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Define a function to greet a user
+greet() {
+  local name=$1
+  echo "Hello, $name! Welcome to shell scripting."
+}
+
+# Set a variable
+user="Alice"
+
+# Call the greet function
+greet "$user"
+
+# Loop through a list of numbers
+for i in {1..5}; do
+  echo "Number $i"
+done
+
+# Conditional example
+if [ $user == "Alice" ]; then
+  echo "Hi Alice, nice to see you!"
+else
+  echo "Hello, stranger!"
+fi

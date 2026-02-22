@@ -1,0 +1,35 @@
+require 'vendor/autoload.php';
+
+use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\ContentItem;
+use Google\Cloud\Dlp\V2\InfoType;
+use Google\Cloud\Dlp\V2\InspectConfig;
+
+// Initialize the DLP client.
+$dlpServiceClient = new DlpServiceClient();
+
+// Define the info type you want to detect (e.g., EMAIL_ADDRESS).
+$infoTypesElement = (new InfoType())
+    ->setName('EMAIL_ADDRESS');
+$inspectConfig = (new InspectConfig())
+    ->setInfoTypes([$infoTypesElement]);
+
+// Text containing sensitive data (test string).
+$item = (new ContentItem())
+    ->setValue('My email is example@example.com.');
+
+// Replace [PROJECT_ID] with your actual Google Cloud project ID.
+$formattedParent = $dlpServiceClient->projectName('[PROJECT_ID]');
+
+// Inspect the string for sensitive data.
+$response = $dlpServiceClient->inspectContent($formattedParent, [
+    'inspectConfig' => $inspectConfig,
+    'item' => $item
+]);
+
+$findings = $response->getResult()->getFindings();
+
+// Output the results.
+foreach ($findings as $finding) {
+    print $finding->getInfoType()->getName() . PHP_EOL;
+}
